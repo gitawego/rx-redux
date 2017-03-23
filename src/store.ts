@@ -1,10 +1,10 @@
+
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/startWith';
-import reducer from './reducer';
 import { isObservable } from './utils';
 
 export interface Action {
@@ -21,16 +21,28 @@ export interface State {
   [id: string]: any;
 }
 export interface Reducer {
-  (state: State, action: Action): State;
+  (state: any, action: Action): any;
 }
+
 
 const action$ = new Subject();
 let store = null;
-export const initStore = (initState: State, reducer: Reducer) =>
-  action$
+export const initStore = (initState: State, reducer: Reducer) => {
+  return action$
     .flatMap((action: any) => isObservable(action) ? action : Observable.from([action]))
     .startWith(initState)
-    .scan(reducer);
+    .map(state => {
+      console.log('start with', state);
+      return state;
+    })
+    .scan(reducer)
+    .map((state) => {
+      console.log('state scan', state);
+      Object.assign(initState, state);
+      return state;
+    });
+};
+
 
 export const dispatch = (type: string, payload?: any) => {
   const action: Action = {
@@ -43,12 +55,15 @@ export const dispatch = (type: string, payload?: any) => {
   }
 }
 
-
 export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
   if (store) {
     throw new Error('store is already created');
   }
   store = initStore(initState, reducer);
+  const stateStore = new Subject();
+  store.subscribe((state) => {
+    stateStore.next(state);
+  });
   return {
     dispatch,
     getState(): State {
@@ -59,7 +74,7 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
       return () => sub.unsubscribe();
     },
     select(key: string) {
-      return store.map(state => state[key]).distinctUntilChanged();
+      return stateStore.startWith(initState).pluck(key).distinctUntilChanged();
     }
   };
 };
