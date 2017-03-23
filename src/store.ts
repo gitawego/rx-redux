@@ -70,7 +70,7 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
       return { ...initState };
     },
     subscribe(listener) {
-      const sub = store.subscribe(listener);
+      const sub = stateStore.startWith(initState).subscribe(listener);
       return () => sub.unsubscribe();
     },
     select(key: string) {
