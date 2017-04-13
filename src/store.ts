@@ -64,8 +64,8 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
       const sub = store.subscribe(listener);
       return () => sub.unsubscribe();
     },
-    select(key: string) {
-      return store.pluck(key).distinctUntilChanged();
+    select(...keys: string[]) {
+      return store.pluck(...keys).distinctUntilChanged();
     },
   };
 };
