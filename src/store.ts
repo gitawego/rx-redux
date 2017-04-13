@@ -1,10 +1,4 @@
-
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/startWith';
+import { Observable, Subject } from 'rxjs';
 import { isObservable } from './utils';
 
 export interface Action {
@@ -20,10 +14,8 @@ export interface ReduxStore {
 export interface State {
   [id: string]: any;
 }
-export interface Reducer {
-  (state: any, action: Action): any;
-}
 
+export type Reducer = (state: any, action: Action) => any;
 
 const action$ = new Subject();
 let store = null;
@@ -31,51 +23,50 @@ export const initStore = (initState: State, reducer: Reducer) => {
   return action$
     .flatMap((action: any) => isObservable(action) ? action : Observable.from([action]))
     .startWith(initState)
-    .map(state => {
-      console.log('start with', state);
-      return state;
-    })
     .scan(reducer)
-    .map((state) => {
-      console.log('state scan', state);
-      Object.assign(initState, state);
-      return state;
-    });
+    // these two lines make our observable hot and have it emit the last state
+    // upon subscription
+    .publishReplay(1)
+    .refCount();
 };
-
 
 export const dispatch = (type: string, payload?: any) => {
   const action: Action = {
     type,
-    payload
+    payload,
   };
-  action$.next(action);
   if (isObservable(action.payload)) {
-    action$.next(action.payload);
+    delete action.payload;
   }
-}
+  action$.next(action);
+
+  if (isObservable(payload)) {
+    action$.next(payload);
+  }
+};
 
 export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
   if (store) {
     throw new Error('store is already created');
   }
+  const stateHolder = { ...initState };
   store = initStore(initState, reducer);
-  const stateStore = new Subject();
   store.subscribe((state) => {
-    stateStore.next(state);
+    // stateStore.next(state);
+    Object.assign(stateHolder, state);
   });
   return {
     dispatch,
     getState(): State {
-      return { ...initState };
+      return { ...stateHolder };
     },
     subscribe(listener) {
-      const sub = stateStore.startWith(initState).subscribe(listener);
+      const sub = store.subscribe(listener);
       return () => sub.unsubscribe();
     },
     select(key: string) {
-      return stateStore.startWith(initState).pluck(key).distinctUntilChanged();
-    }
+      return store.pluck(key).distinctUntilChanged();
+    },
   };
 };
 
@@ -99,4 +90,4 @@ export const combineReducers = (reducers: Reducer[]) =>
       state = reducer(state, action);
     });
     return state;
-  }
+  };
