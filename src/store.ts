@@ -9,7 +9,7 @@ export interface ReduxStore {
   dispatch(type: string, payload?: any): void;
   getState(): any;
   subscribe(listener: (event) => void): () => void;
-  select(key: string): Observable<any>;
+  select(...keys: string[]): Observable<any>;
 }
 export interface State {
   [id: string]: any;
