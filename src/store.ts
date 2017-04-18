@@ -49,11 +49,13 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
   if (store) {
     throw new Error('store is already created');
   }
-  const stateHolder = { ...initState };
+  const stateHolder = {
+    state: initState
+  };
   store = initStore(initState, reducer);
   store.subscribe((state) => {
     // stateStore.next(state);
-    Object.assign(stateHolder, state);
+    stateHolder.state = state;
   });
   return {
     dispatch,
@@ -61,11 +63,15 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
       return { ...stateHolder };
     },
     subscribe(listener) {
-      const sub = store.subscribe(listener);
+      const sub = store.map(() => stateHolder.state)
+        .subscribe(listener);
       return () => sub.unsubscribe();
     },
     select(...keys: string[]) {
-      return store.pluck(...keys).distinctUntilChanged();
+      return store.map(() => stateHolder.state)
+        .pluck(...keys)
+        .distinctUntilChanged();
+
     },
   };
 };
