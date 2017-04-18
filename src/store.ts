@@ -5,9 +5,9 @@ export interface Action {
   type: string;
   payload?: any;
 }
-export interface ReduxStore {
+export interface ReduxStore<S> {
   dispatch(type: string, payload?: any): void;
-  getState(): any;
+  getState(): S;
   subscribe(listener: (event) => void): () => void;
   select<T>(...keys: string[]): Observable<T>;
 }
@@ -42,7 +42,7 @@ export const dispatch = (type: string, payload?: any) => {
   }
 };
 
-export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
+export const createStore = (initState: State, reducer: Reducer): ReduxStore<State> => {
   if (store) {
     throw new Error('store is already created');
   }
