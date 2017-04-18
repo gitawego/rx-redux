@@ -35,13 +35,10 @@ export const dispatch = (type: string, payload?: any) => {
     type,
     payload,
   };
-  if (isObservable(action.payload)) {
-    delete action.payload;
-  }
   action$.next(action);
 
-  if (isObservable(payload)) {
-    action$.next(payload);
+  if (isObservable(action.payload)) {
+    action$.next(action.payload);
   }
 };
 
