@@ -21,7 +21,7 @@ const action$ = new Subject();
 let store = null;
 export const initStore = (initState: State, reducer: Reducer) => {
   return action$
-    .flatMap((action: any) => isObservable(action) ? action : Observable.from([action]))
+    .flatMap((action: any) => isObservable(action) ? action : Observable.of(action))
     .startWith(initState)
     .scan(reducer)
     // these two lines make our observable hot and have it emit the last state
