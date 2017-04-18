@@ -60,7 +60,7 @@ export const createStore = (initState: State, reducer: Reducer): ReduxStore => {
   return {
     dispatch,
     getState(): State {
-      return { ...stateHolder };
+      return { ...stateHolder.state };
     },
     subscribe(listener) {
       const sub = store.map(() => stateHolder.state)
