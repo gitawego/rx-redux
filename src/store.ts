@@ -52,13 +52,7 @@ export function createStore<S>(initState: S, reducer: Reducer<S>): ReduxStore<S>
     state: initState
   };
   store = initStore<S>(initState, reducer);
-  store
-    .do(state => {
-      if (ENV === 'development') {
-        console.log('store debug', JSON.parse(JSON.stringify(state)));
-      }
-    })
-    .subscribe((state: S) => {
+  store.subscribe((state: S) => {
       stateHolder.state = state;
     });
   return {
