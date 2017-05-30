@@ -6,9 +6,15 @@ import 'rxjs/add/operator/startWith';
 import { isObservable } from './utils';
 import { Store } from './store';
 import { State } from './state';
-import { ActionReducer } from './reducer';
-import { Action } from './dispatcher';
 
+export interface Action {
+  type: string;
+  payload?: any;
+}
+
+export interface ActionReducer<T> {
+  (state: T, action: Action): T;
+}
 
 const action$ = new Subject();
 
