@@ -1,21 +1,20 @@
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { queue } from 'rxjs/scheduler/queue';
 import { isObservable } from './utils';
 
 export class State<T> extends BehaviorSubject<T> {
   stateValue: T;
-  constructor(initState: T, action$, reducer) {
+  constructor(initState: T, action$: Subject<any>, reducer) {
     super(initState);
     this.stateValue = initState;
-    const state$ = action$
+    const actionInQueue$ = action$.observeOn(queue);
+    const state$ = actionInQueue$
       .flatMap((action: any) => isObservable(action) ? action : Observable.of(action))
-      .scan(reducer, initState)
-      // these two lines make our observable hot and have it emit the last state
-      // upon subscription
-      .publishReplay(1)
-      .refCount();
+      .scan(reducer, initState);
 
-    state$.subscribe(value => {
+    state$.subscribe((value: T) => {
       this.stateValue = value;
       console.log('state.....', value);
       this.next(value);

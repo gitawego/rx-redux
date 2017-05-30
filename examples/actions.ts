@@ -1,12 +1,12 @@
-import { actionCreator } from './store';
+import { actionCreator } from '../src/redux';
 import { Observable } from 'rxjs/Rx';
-import { label } from './utils';
+import { label } from '../src/utils';
 const countryUrl = 'https://restcountries-v1.p.mashape.com/all';
 
 export const CountryActionType = {
   ALL_COUNTRIES_LOADING: label('loading all countries'),
   ALL_COUNTRIES_LOADED: label('all countries are loaded'),
-	NAME_CHANGED:label('change name')
+  NAME_CHANGED: label('change name')
 }
 export const loadCountries = actionCreator(() => {
   return {
