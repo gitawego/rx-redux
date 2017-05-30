@@ -13,4 +13,7 @@ export class Store<T> extends Observable<T> {
     return this.pluck(...keys)
       .distinctUntilChanged();
   }
+  complete() {
+    // noop
+  }
 }

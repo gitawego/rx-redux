@@ -19,6 +19,7 @@
     "@types/jasmine": "^2.5.47",
     "jasmine": "^2.6.0",
     "jasmine-spec-reporter": "^4.1.0",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "xhr2": "^0.1.4"
   }
 }

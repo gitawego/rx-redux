@@ -1,7 +1,7 @@
 import { createStore } from './redux';
 import { Store } from './store';
 import { State, reducer } from '../examples/reducer';
-import { changeName } from '../examples/actions';
+import { changeName, loadCountries } from '../examples/actions';
 
 describe('store', () => {
   let store: Store<State>;
@@ -12,12 +12,22 @@ describe('store', () => {
   it('should get name from state', (done) => {
     store.select('countries').subscribe((resp) => {
       console.log('resp', resp);
-      if (!resp) {
+      if (!resp || !resp['name']) {
         return;
       }
       expect(resp['name']).toBe('test');
       done();
     });
     changeName('test');
+  });
+  it('should get countries', (done) => {
+    store.select('countries', 'countries').subscribe((resp) => {
+      if (!resp) {
+        return;
+      }
+      expect(Array.isArray(resp)).toBe(true);
+      done();
+    });
+    loadCountries();
   });
 });

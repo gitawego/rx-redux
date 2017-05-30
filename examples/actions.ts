@@ -1,5 +1,6 @@
+
 import { actionCreator } from '../src/redux';
-import { Observable } from 'rxjs/Rx';
+import { request } from './ajax';
 import { label } from '../src/utils';
 const countryUrl = 'https://restcountries-v1.p.mashape.com/all';
 
@@ -11,9 +12,12 @@ export const CountryActionType = {
 export const loadCountries = actionCreator(() => {
   return {
     type: CountryActionType.ALL_COUNTRIES_LOADING,
-    payload: Observable.ajax.get(countryUrl, {
-      'X-Mashape-Key': 'l5eMXwY6d3mshmvnljsx6GVH9YWxp1IsKhsjsnSAZ5yXpYiGRl',
-      'Content-Type': 'application/json'
+    payload: request({
+      url: countryUrl,
+      headers: {
+        'X-Mashape-Key': 'l5eMXwY6d3mshmvnljsx6GVH9YWxp1IsKhsjsnSAZ5yXpYiGRl',
+        'Content-Type': 'application/json'
+      }
     })
       .map((xhr) => ({
         type: CountryActionType.ALL_COUNTRIES_LOADED,
