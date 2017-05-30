@@ -3,7 +3,7 @@ import { Action } from './redux';
 import { isObservable } from './utils';
 
 export class Dispatcher extends BehaviorSubject<Action> {
-  static INIT = '@ngrx/store/init';
+  static INIT = 'store/init';
 
   constructor() {
     super({ type: Dispatcher.INIT });
