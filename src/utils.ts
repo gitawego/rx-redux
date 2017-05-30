@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { ActionReducer } from './reducer';
+import { ActionReducer } from './redux';
 
 let labelCache: { [label: string]: boolean } = {};
 export const isObservable = obs => obs instanceof Observable;
