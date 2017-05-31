@@ -20,6 +20,6 @@ export function addEffect(instance) {
     instance[name].subscribe(action$.dispatch.bind(action$));
   });
 }
-export function runEffects(instances) {
+export function runEffects(instances: any[]) {
   instances.forEach(addEffect);
 }
