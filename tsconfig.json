@@ -21,7 +21,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
     "importHelpers": false,
-
     "lib": [
       "es2015",
       "es2016",
@@ -29,7 +28,7 @@
       "dom"
     ],
     "listFiles": false,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "typeRoots": [
       "./node_modules/@types/"
     ],
@@ -47,6 +46,7 @@
     "rewriteTsconfig": false
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "examples/**/*"
   ]
 }

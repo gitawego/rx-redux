@@ -2,11 +2,17 @@ import { createStore } from './redux';
 import { Store } from './store';
 import { State, reducer } from '../examples/reducer';
 import { changeName, loadCountries, CountryActionType } from '../examples/actions';
+import { CountryEffects } from '../examples/countries.effect';
+import { runEffects } from './effect';
+
 
 describe('store', () => {
   let store: Store<State>;
   it('should create store', () => {
     store = createStore(<State>{}, reducer);
+    runEffects([
+      new CountryEffects(),
+    ]);
     expect(store instanceof Store).toBe(true);
   });
   it('should get name from state', (done) => {
