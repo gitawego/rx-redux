@@ -16,7 +16,7 @@ export class State<T> extends BehaviorSubject<T> {
 
     state$.subscribe((value: T) => {
       this.stateValue = value;
-      console.log('state.....', value);
+      //console.log('state.....', value);
       this.next(value);
     });
   }

@@ -1,8 +1,4 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/startWith';
+import { BehaviorSubject } from 'rxjs';
 import { isObservable } from './utils';
 import { Store } from './store';
 import { State } from './state';
@@ -17,7 +13,7 @@ export interface ActionReducer<T> {
   (state: T, action: Action): T;
 }
 
-const action$ = new Dispatcher();
+export const action$ = new Dispatcher();
 
 /**
  * create action
@@ -30,6 +26,6 @@ export const actionCreator = (func) => (...args) => {
 
 export function createStore<S>(initState: S, reducer: ActionReducer<S>) {
   const state = new State<S>(initState, action$, reducer);
-  return new Store<S>(state);
+  return new Store<S>(state, action$);
 }
 
