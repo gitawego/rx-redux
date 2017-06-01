@@ -1,7 +1,8 @@
+import 'reflect-metadata';
 import { createStore } from './redux';
 import { Store } from './store';
 import { State, reducer } from '../examples/reducer';
-import { changeName, loadCountries, CountryActionType } from '../examples/actions';
+import { changeName, CountryActionType, LoadCountries } from '../examples/actions';
 import { CountryEffects } from '../examples/countries.effect';
 import { runEffects } from './effect';
 
@@ -36,17 +37,6 @@ describe('store', () => {
       sub.unsubscribe();
       done();
     });
-    loadCountries();
+    store.dispatch(new LoadCountries());
   });
-  it('should get countreis with ofType', (done) => {
-    const sub = store.select('countries', 'countries').skip(1).subscribe((resp) => {
-      if (!resp) {
-        return;
-      }
-      expect(Array.isArray(resp)).toBe(true);
-      sub.unsubscribe();
-      done();
-    });
-    store.dispatch(CountryActionType.LOAD_ALL_COUNTRIES);
-  })
 });

@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { Dispatcher } from './dispatcher';
+import { Action } from './redux';
 export class Store<T> extends Observable<T> {
   action$: Dispatcher;
   constructor(
@@ -13,11 +14,8 @@ export class Store<T> extends Observable<T> {
   getState() {
     return { ...this.source['stateValue'] };
   }
-  dispatch(type, payload?) {
-    this.action$.dispatch({
-      type,
-      payload
-    });
+  dispatch(action: Action) {
+    this.action$.dispatch(action);
   }
   select<S>(...keys: string[]): Observable<S> {
     return this.pluck(...keys)

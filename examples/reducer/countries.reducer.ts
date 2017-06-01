@@ -1,4 +1,4 @@
-import { CountryActionType } from '../actions';
+import { CountryActionType, Actions } from '../actions';
 import { ActionReducer } from '../../src/redux'
 export interface State {
   countriesLoading: boolean;
@@ -8,7 +8,7 @@ export interface State {
 export const initialState = <State>{
 
 }
-export function reducer(state = initialState, action) {
+export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
     case CountryActionType.ALL_COUNTRIES_LOADING:
       return {
