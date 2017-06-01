@@ -10,11 +10,7 @@ export class Dispatcher extends BehaviorSubject<Action> {
   }
 
   dispatch(action: Action): void {
-    console.log('dispatch...', action.type, action.payload);
     this.next(action);
-    if (isObservable(action.payload)) {
-      this.next(action.payload);
-    }
   }
   ofType(type: string): Observable<any> {
     return this.filter((action) => action.type === type);
