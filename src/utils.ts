@@ -1,8 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import { ActionReducer } from './redux';
+import { Observable, Subject } from 'rxjs';
+import { ActionReducer, Action } from './redux';
 
 let labelCache: { [label: string]: boolean } = {};
 export const isObservable = obs => obs instanceof Observable;
+export const isSubject = sub => sub instanceof Subject;
 export const log = console.log.bind(console);
 export function label<T extends string>(label: T): T {
   if (labelCache[<string>label]) {
@@ -37,6 +38,20 @@ export function combineReducers(reducers: any): ActionReducer<any> {
       nextState[key] = nextStateForKey;
       hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
     }
+
     return hasChanged ? nextState : state;
+  };
+}
+
+export interface ActionHanlders<T, A> {
+  [id: string]: (state: T, action: A) => any;
+}
+export function handleActions<T, A extends Action>(handlers: ActionHanlders<T, A>,
+  defaultState = <T>{}): ActionReducer<T> {
+  return (state: T = defaultState, action: A) => {
+    if (action.type in handlers) {
+      state = handlers[action.type](state, action);
+    }
+    return state;
   };
 }
