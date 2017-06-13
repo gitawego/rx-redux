@@ -44,7 +44,7 @@ export function combineReducers(reducers: any): ActionReducer<any> {
 }
 
 export interface ActionHanlders<T, A> {
-  [id: string]: (state: T, action: A) => any;
+  [actionType: string]: (state: T, action: A) => any;
 }
 export function handleActions<T, A extends Action>(handlers: ActionHanlders<T, A>,
   defaultState = <T>{}): ActionReducer<T> {
